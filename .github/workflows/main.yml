@@ -1,0 +1,35 @@
+# REV 1.3
+# 1.0 - initial release
+# 1.1 - updated container image address to point to internal cache harbor
+# 1.2 - implementing REV version(s) for quick version validation/comparison
+# 1.3 - implementing reusable workflow
+
+# Name of this GitHub Actions workflow.
+name: Semgrep SAST
+
+on:
+  # Scan changed files in PRs (diff-aware scanning):
+  pull_request: {}
+
+  # Scan on-demand through GitHub Actions interface:
+  workflow_dispatch: {}
+
+  # Scan mainline branches and report all findings:
+  # Ensure you have the correct branch/es for your project
+  push:
+    branches: ["master", "main", "test", "dev"]
+
+  # Schedule the CI job (this method uses cron syntax):
+  #schedule:
+    #- cron: '0 0 1 * *' # Sets Semgrep to scan on the 1st of every month at 12:00 AM UTC.
+    # It is recommended to change the schedule to a random time.
+
+jobs:
+  Call-Workflow:
+    uses: intel-innersource/frameworks.actions.semgrep-static-code-scan/.github/workflows/semgrep.yml@main
+    with:
+    # Please insert the runner group for your project
+    # Example: runner-group: 'innersource.prod.amr.dind'
+      runner-group: ''
+    secrets:
+      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
